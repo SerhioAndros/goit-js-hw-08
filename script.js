@@ -4,14 +4,12 @@ const refs = {
     galleryNode: document.querySelector(".js-gallery"),
     modalNode: document.querySelector(".js-lightbox"),
     modalOverlay: document.querySelector(".lightbox__overlay"),
-    // modalImage: document.querySelector(".lightbox__image"),
+    modalImage: document.querySelector(".lightbox__image"),
     modalBtn: document.querySelector(".lightbox__button"),
     modalImgWrapper: document.querySelector(".lightbox__content"),
 };
 
-const galleryArr = [];
-
-galleryItems.forEach(img => {
+const galleryArr = galleryItems.map((img, index) => {
     const liNode = document.createElement("li");
     liNode.classList.add("gallery__item");
 
@@ -20,9 +18,9 @@ galleryItems.forEach(img => {
     aNode.href = img.original;
     liNode.append(aNode);
 
-    aNode.innerHTML = `<img class="gallery__image" src= ${img.preview} id=${galleryItems.indexOf(img)} data-source=${img.original} alt=${img.description}/>`;
+    aNode.innerHTML = `<img class="gallery__image" src= ${img.preview} data-id=${index} data-source=${img.original} alt=${img.description}/>`;
     
-    galleryArr.push(liNode);
+    return liNode;
 });
 
 refs.galleryNode.append(...galleryArr);
@@ -38,49 +36,35 @@ let currentImgIndex = "";
 function galleryOpen(evt) {
     if (evt.target.nodeName === "IMG") {
         evt.preventDefault();
-        currentImgIndex = evt.target.id;
+        currentImgIndex = +evt.target.dataset.id;
         window.addEventListener('keydown', galleryCloseKey);
         window.addEventListener('keydown', galleryChange);
         refs.modalNode.classList.add("is-open");
-        refs.modalImgWrapper.innerHTML = `<img class="lightbox__image" src="${evt.target.dataset.source}" alt="${evt.target.getAttribute("alt")}" />`;
+        refs.modalImage.src = evt.target.dataset.source;
+        refs.modalImage.alt = evt.target.alt;
     };
 };
 
 function galleryChange(evt) {
     if (evt.code === "ArrowRight") {
         if (currentImgIndex < (galleryLength - 1)) {
-            let nextImgIndex = +currentImgIndex + 1;
-            let nextImg = document.getElementById(nextImgIndex);
             currentImgIndex++;
-            refs.modalImgWrapper.innerHTML = `<img class="lightbox__image" src="${nextImg.dataset.source}" alt="${nextImg.getAttribute("alt")}" />`;
-            console.log("go to the right");
+        } else {
+            currentImgIndex = 0
         }
-        // else if (currentImgIndex === (galleryLength)) {
-        //     currentImgIndex = 0;
-        //     let nextImgIndex = +currentImgIndex;
-        //     let nextImg = document.getElementById(nextImgIndex);
-        //     refs.modalImgWrapper.innerHTML = `<img class="lightbox__image" src="${nextImg.dataset.source}" alt="${nextImg.getAttribute("alt")}" />`;
-        //     console.log("go to the right");
-        // };
+        refs.modalImage.src = galleryItems[currentImgIndex].original;
+        refs.modalImage.alt = galleryItems[currentImgIndex].description;            
+        console.log("go to the right");
     }
     else if (evt.code === "ArrowLeft") {
         if (currentImgIndex > 0) {
-            let nextImgIndex = +currentImgIndex - 1;
-            let nextImg = document.getElementById(nextImgIndex);
             currentImgIndex--;
-            refs.modalImgWrapper.innerHTML = `<img class="lightbox__image" src="${nextImg.dataset.source}" alt="${nextImg.getAttribute("alt")}" />`;
-            console.log("turn to the left")
+        } else {
+            currentImgIndex = galleryLength - 1;
         }
-        // else if (currentImgIndex === 1) {
-            
-        //     currentImgIndex = galleryLength;
-        //     let nextImgIndex = +currentImgIndex;
-        //     let nextImg = document.getElementById(nextImgIndex);
-        //     currentImgIndex--;
-        //     refs.modalImgWrapper.innerHTML = `<img class="lightbox__image" src="${nextImg.dataset.source}" alt="${nextImg.getAttribute("alt")}" />`;
-        //     console.log("go to the right");
-        // }
-        
+        refs.modalImage.src = galleryItems[currentImgIndex].original;
+        refs.modalImage.alt = galleryItems[currentImgIndex].description;
+        console.log("turn to the left")
     }
     else return
 };

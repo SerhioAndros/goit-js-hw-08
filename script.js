@@ -53,7 +53,6 @@ function galleryChange(evt) {
             let nextImg = document.getElementById(nextImgIndex);
             currentImgIndex++;
             refs.modalImgWrapper.innerHTML = `<img class="lightbox__image" src="${nextImg.dataset.source}" alt="${nextImg.getAttribute("alt")}" />`;
-            console.log("go to the right");
         }
         // else if (currentImgIndex === (galleryLength)) {
         //     currentImgIndex = 0;
@@ -69,7 +68,6 @@ function galleryChange(evt) {
             let nextImg = document.getElementById(nextImgIndex);
             currentImgIndex--;
             refs.modalImgWrapper.innerHTML = `<img class="lightbox__image" src="${nextImg.dataset.source}" alt="${nextImg.getAttribute("alt")}" />`;
-            console.log("turn to the left")
         }
         // else if (currentImgIndex === 1) {
             
